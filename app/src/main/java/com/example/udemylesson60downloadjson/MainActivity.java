@@ -6,6 +6,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -100,7 +101,12 @@ public class MainActivity extends AppCompatActivity {
 
                 // Данные указанные в квадратных скобках - являются массивами
                 // получаем массив, затем 0-ой элемент и из него получить данные
-
+                JSONArray jsonArray = jsonObject.getJSONArray("weather");
+                JSONObject weather = jsonArray.getJSONObject(0);
+                String mainFromJSON = weather.getString("main");
+                Log.i("qwerty", mainFromJSON);
+                String description = weather.getString("description");
+                Log.i("qwerty", description);
 
             } catch (JSONException e) {
                 e.printStackTrace();
