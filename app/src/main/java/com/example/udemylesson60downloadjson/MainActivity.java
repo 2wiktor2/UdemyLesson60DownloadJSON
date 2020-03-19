@@ -6,6 +6,9 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -24,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
         // Запуск задачи
         DownloadJSONTask task = new DownloadJSONTask();
         // В параметры передать стпоку с сайта
-        task.execute();
+        task.execute("https://samples.openweathermap.org/data/2.5/weather?q=London,uk&appid=b6907d289e10d714a6e88b30761fae22");
     }
 
 
@@ -69,6 +72,7 @@ public class MainActivity extends AppCompatActivity {
             }
             return null;
         }
+
         // Кроме получения данных, в сетоде onCreate, мы можем вывести их в классе DownloadJSONTask.
         // Для этого нужно переопределить метод onPostExecute
         // Если метод doInBackground не имеет доступа к элементам графического интерфейса,
@@ -78,7 +82,33 @@ public class MainActivity extends AppCompatActivity {
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
             // Выводим весь результат одной строкой
-            Log.i ("qwerty", s);
+            Log.i("qwerty", s);
+            // Преобразование строки в Json объект
+            try {
+                JSONObject jsonObject = new JSONObject(s);
+
+                // получить строку
+                String name = jsonObject.getString("name");
+                Log.i("qwerty", name);
+
+                // В JSON хранятся другие JSON-ы. Получаем строки из JSON внутри JSON-а
+                JSONObject main = jsonObject.getJSONObject("main");
+                String temp = main.getString("temp");
+                Log.i("qwerty", temp);
+                String pressure = main.getString("pressure");
+                Log.i("qwerty", pressure);
+
+                // Данные указанные в квадратных скобках - являются массивами
+                // получаем массив, затем 0-ой элемент и из него получить данные
+
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         }
     }
 }
+
+/*
+{"coord":{"lon":-0.13,"lat":51.51},"weather":[{"id":300,"main":"Drizzle","description":"light intensity drizzle","icon":"09d"}],"base":"stations","main":{"temp":280.32,"pressure":1012,"humidity":81,"temp_min":279.15,"temp_max":281.15},"visibility":10000,"wind":{"speed":4.1,"deg":80},"clouds":{"all":90},"dt":1485789600,"sys":{"type":1,"id":5091,"message":0.0103,"country":"GB","sunrise":1485762037,"sunset":1485794875},"id":2643743,"name":"London","cod":200}
+*/
